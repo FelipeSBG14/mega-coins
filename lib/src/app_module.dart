@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'modules/core/core_module.dart';
-import 'modules/home/home_page.dart';
+import 'modules/home/home_module.dart';
 import 'modules/login/login_module.dart';
 
 class AppModule extends Module {
@@ -15,11 +15,9 @@ class AppModule extends Module {
           '/login',
           module: LoginModule(),
         ),
-        ChildRoute(
-          '/home',
-          child: (context, args) {
-            return const HomePage();
-          },
+        ModuleRoute(
+          '/home/',
+          module: HomeModule(),
         ),
       ];
 }

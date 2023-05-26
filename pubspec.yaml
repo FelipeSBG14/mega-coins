@@ -59,6 +59,8 @@ dependencies:
   firebase_core: ^1.19.0
   firebase_storage: ^10.3.0
   firebase_core_platform_interface: 4.5.1
+  firebase_database: ^9.1.7
+  uuid: ^3.0.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

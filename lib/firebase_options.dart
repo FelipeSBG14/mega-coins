@@ -58,6 +58,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '111831772978',
     projectId: 'mega-coins-753d2',
     authDomain: 'mega-coins-753d2.firebaseapp.com',
+    databaseURL: 'https://mega-coins-753d2-default-rtdb.firebaseio.com',
     storageBucket: 'mega-coins-753d2.appspot.com',
     measurementId: 'G-JHL8B1VR92',
   );

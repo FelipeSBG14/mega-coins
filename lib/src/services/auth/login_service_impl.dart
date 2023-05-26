@@ -10,4 +10,7 @@ class LoginServiceImpl implements LoginService {
   @override
   Future<User?> login(String email, String password) =>
       _authRepository.login(email, password);
+
+  @override
+  Future<User?> getUser() => _authRepository.getUser();
 }

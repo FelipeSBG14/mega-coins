@@ -3,7 +3,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validatorless/validatorless.dart';
-
 import '../../core/ui/helpers/loader.dart';
 import '../../core/ui/helpers/messages.dart';
 import '../../core/ui/helpers/size_extensions.dart';
@@ -34,7 +33,8 @@ class _LoginPageState extends State<LoginPage> with Loader, Messages {
           break;
         case LoginStateStatus.success:
           hideLoader();
-          Modular.to.navigate('/home');
+          showSuccess('Login realizado com sucesso');
+          Modular.to.navigate('/home/');
           break;
         case LoginStateStatus.error:
           hideLoader();
@@ -64,8 +64,8 @@ class _LoginPageState extends State<LoginPage> with Loader, Messages {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidht = context.screenWidht;
-    var screenHeight = context.screenHeight;
+    final screenWidht = context.screenWidht;
+    final screenHeight = context.screenHeight;
     return Scaffold(
       body: Form(
         key: formKey,
@@ -126,10 +126,12 @@ class _LoginPageState extends State<LoginPage> with Loader, Messages {
                         ),
                         style: context.textStyles.textRegular
                             .copyWith(color: Colors.white),
-                        validator: Validatorless.multiple([
-                          Validatorless.required('E-mail obrigatório'),
-                          Validatorless.email('E-mail inválido'),
-                        ]),
+                        validator: Validatorless.multiple(
+                          [
+                            Validatorless.required('E-mail obrigatório'),
+                            Validatorless.email('E-mail inválido'),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -149,6 +151,7 @@ class _LoginPageState extends State<LoginPage> with Loader, Messages {
                                   controller.showPassword
                                       ? Icons.visibility
                                       : Icons.visibility_off,
+                                  color: Colors.red,
                                 ),
                               ),
                             ),

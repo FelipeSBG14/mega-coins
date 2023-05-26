@@ -1,16 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:mega_coins/src/modules/home/widgets/player_row.dart';
-
+import 'package:flutter_modular/flutter_modular.dart';
+import '../../core/ui/helpers/debouncer.dart';
+import 'widgets/player_row.dart';
+import 'package:mobx/mobx.dart';
+import '../../core/ui/helpers/loader.dart';
+import '../../core/ui/helpers/messages.dart';
 import '../../core/ui/helpers/size_extensions.dart';
 import '../../core/ui/styles/text_styles.dart';
+import 'home_controller.dart';
+import 'players/players_modal.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with Loader, Messages {
+  late final ReactionDisposer statusReactionDisposer;
+  final debouncer = Debouncer(milisencods: 2000);
+  final controller = Modular.get<HomeController>();
+  bool isLoading = false;
+  String email = '';
+  @override
+  void initState() {
+    controller.getInformation();
+    statusReactionDisposer = reaction((_) => controller.homeStatus, (status) {
+      switch (status) {
+        case HomeStateStatus.inital:
+          break;
+        case HomeStateStatus.loading:
+          showLoader();
+          break;
+        case HomeStateStatus.success:
+          hideLoader();
+          final user = controller.currentUser;
+          setState(() {
+            email = user?.email ?? 'Não encontrado';
+            isLoading = true;
+          });
+          controller.isLoading = true;
+          break;
+        case HomeStateStatus.error:
+          hideLoader();
+          showError(controller.errorMessage ?? 'Erro');
+          controller.isLoading = true;
+          setState(() {
+            isLoading = false;
+          });
+          break;
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenShortestSize = context.screenShortestSide;
     final screenWidht = context.screenWidht;
+    final players = controller.playersList;
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -38,6 +87,9 @@ class HomePage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Container(
                       width: screenWidht * 1,
                       height: context.screenHeight * 0.20,
@@ -64,13 +116,38 @@ class HomePage extends StatelessWidget {
                     ),
                     TextFormField(
                       decoration: const InputDecoration(
-                        label: Text('Pesquisar pro nome'),
+                        label: Text('Pesquisar pelo nome'),
                       ),
+                      onChanged: (value) {
+                        debouncer.call(
+                          () {
+                            controller.filterByName(value);
+                          },
+                        );
+                      },
                       style: context.textStyles.textRegular
                           .copyWith(color: Colors.white),
                     ),
                     Column(
                       children: [
+                        Visibility(
+                          visible:
+                              controller.currentUser == null ? false : true,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => PlayersModal(
+                                    controller: controller,
+                                  ),
+                                );
+                              },
+                              child: const Text('Adicionar Jogador'),
+                            ),
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -100,14 +177,36 @@ class HomePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: context.screenHeight * 1,
-                          width: screenWidht * 1,
-                          child: ListView.builder(
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return const PlayerRow();
-                            },
+                        Visibility(
+                          visible: isLoading,
+                          replacement: const CircularProgressIndicator(),
+                          child: SizedBox(
+                            height: context.screenHeight * 1,
+                            width: screenWidht * 1,
+                            child: ListView.builder(
+                              itemCount: players?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                final player = players?[index];
+                                return players == null
+                                    ? Center(
+                                        child: Text(
+                                          'Nenhum jogador encontrado !',
+                                          style: context.textStyles.textRegular
+                                              .copyWith(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: PlayerRow(
+                                          controller: controller,
+                                          player: player,
+                                        ),
+                                      );
+                              },
+                            ),
                           ),
                         ),
                       ],

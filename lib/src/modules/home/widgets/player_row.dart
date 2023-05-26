@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/ui/styles/text_styles.dart';
+import '../../../models/players_model.dart';
+import '../home_controller.dart';
+import '../players/players_delete_modal.dart';
+import '../players/players_modal.dart';
 
 class PlayerRow extends StatelessWidget {
-  const PlayerRow({Key? key}) : super(key: key);
+  final HomeController controller;
+  final PlayersModel? player;
+  const PlayerRow({
+    Key? key,
+    required this.controller,
+    required this.player,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +21,7 @@ class PlayerRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Felipe Sanches',
+          player!.name,
           style: context.textStyles.textRegular
               .copyWith(color: Colors.white, fontSize: 30),
           overflow: TextOverflow.clip,
@@ -19,7 +29,7 @@ class PlayerRow extends StatelessWidget {
         Row(
           children: [
             Text(
-              '5',
+              player!.coins.toString(),
               style: context.textStyles.textRegular
                   .copyWith(color: Colors.white, fontSize: 30),
             ),
@@ -28,6 +38,42 @@ class PlayerRow extends StatelessWidget {
             ),
             Image.asset(
               'assets/images/mega-coin.gif',
+            ),
+            Visibility(
+              visible: controller.currentUser == null ? false : true,
+              child: IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => PlayersModal(
+                      player: player,
+                      controller: controller,
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.edit,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+            Visibility(
+              visible: controller.currentUser == null ? false : true,
+              child: IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => PlayersDeleteModal(
+                      player: player,
+                      controller: controller,
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.delete_forever,
+                  color: Colors.red,
+                ),
+              ),
             )
           ],
         )
