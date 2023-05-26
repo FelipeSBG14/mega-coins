@@ -148,9 +148,11 @@ class _PlayersModalState extends State<PlayersModal> {
                           keyboardType: TextInputType.number,
                           validator: Validatorless.multiple([
                             Validatorless.required(
-                                'Informe uma quantidade de coins'),
+                              'Informe uma quantidade de coins',
+                            ),
                             Validatorless.number(
-                                'É necessário informar um número'),
+                              'É necessário informar um número',
+                            ),
                           ]),
                         ),
                         const SizedBox(

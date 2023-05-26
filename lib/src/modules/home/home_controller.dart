@@ -39,6 +39,9 @@ abstract class HomeControllerBase with Store {
   List<PlayersModel>? _playersList;
 
   @readonly
+  List<PlayersModel>? _playersSearch;
+
+  @readonly
   String? _filterName;
 
   @readonly
@@ -50,9 +53,13 @@ abstract class HomeControllerBase with Store {
   HomeControllerBase(this._loginService, this.storage, this._playersService);
 
   @action
-  Future<void> filterByName(String name) async {
-    _filterName = name;
-    await getInformation();
+  void filterByName(String name) {
+    _playersSearch = _playersList
+        ?.where(
+          (p) =>
+              (p.name).trim().toUpperCase().contains(name.trim().toUpperCase()),
+        )
+        .toList();
   }
 
   @action
@@ -87,6 +94,7 @@ abstract class HomeControllerBase with Store {
     try {
       _playersList = await _playersService.getPlayers(_filterName);
       orderList(_playersList);
+      _playersSearch = _playersList;
       debugPrint('Lista de Jogadores $_playersList');
     } on FirebaseException catch (e, s) {
       log('Não foi possível achar os jogadores', error: e, stackTrace: s);
@@ -123,6 +131,7 @@ abstract class HomeControllerBase with Store {
       _errorMessage = 'Erro na lista';
       _playersList = [];
     }
+    return null;
   }
 
   @action

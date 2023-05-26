@@ -77,6 +77,42 @@ mixin _$HomeController on HomeControllerBase, Store {
     });
   }
 
+  late final _$_playersSearchAtom =
+      Atom(name: 'HomeControllerBase._playersSearch', context: context);
+
+  List<PlayersModel>? get playersSearch {
+    _$_playersSearchAtom.reportRead();
+    return super._playersSearch;
+  }
+
+  @override
+  List<PlayersModel>? get _playersSearch => playersSearch;
+
+  @override
+  set _playersSearch(List<PlayersModel>? value) {
+    _$_playersSearchAtom.reportWrite(value, super._playersSearch, () {
+      super._playersSearch = value;
+    });
+  }
+
+  late final _$_filterNameAtom =
+      Atom(name: 'HomeControllerBase._filterName', context: context);
+
+  String? get filterName {
+    _$_filterNameAtom.reportRead();
+    return super._filterName;
+  }
+
+  @override
+  String? get _filterName => filterName;
+
+  @override
+  set _filterName(String? value) {
+    _$_filterNameAtom.reportWrite(value, super._filterName, () {
+      super._filterName = value;
+    });
+  }
+
   late final _$_refreshTokenAtom =
       Atom(name: 'HomeControllerBase._refreshToken', context: context);
 
@@ -149,9 +185,22 @@ mixin _$HomeController on HomeControllerBase, Store {
       ActionController(name: 'HomeControllerBase', context: context);
 
   @override
+  void filterByName(String name) {
+    final _$actionInfo = _$HomeControllerBaseActionController.startAction(
+      name: 'HomeControllerBase.filterByName',
+    );
+    try {
+      return super.filterByName(name);
+    } finally {
+      _$HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   List<void>? orderList(List<PlayersModel>? players) {
     final _$actionInfo = _$HomeControllerBaseActionController.startAction(
-        name: 'HomeControllerBase.orderList');
+      name: 'HomeControllerBase.orderList',
+    );
     try {
       return super.orderList(players);
     } finally {

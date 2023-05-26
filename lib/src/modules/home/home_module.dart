@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-
 import '../../services/auth/login_service.dart';
 import '../../services/auth/login_service_impl.dart';
 import '../../services/players/players_service.dart';

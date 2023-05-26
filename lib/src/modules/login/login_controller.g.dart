@@ -75,7 +75,8 @@ mixin _$LoginController on LoginControllerBase, Store {
   @override
   bool showOrHidePassword() {
     final _$actionInfo = _$LoginControllerBaseActionController.startAction(
-        name: 'LoginControllerBase.showOrHidePassword');
+      name: 'LoginControllerBase.showOrHidePassword',
+    );
     try {
       return super.showOrHidePassword();
     } finally {

@@ -16,15 +16,11 @@ class PlayersRepositoryImpl implements PlayersRepository {
   Future<List<PlayersModel>> getPlayers(String? name) async {
     try {
       final List<PlayersModel> _playersList = [];
-
       final response = await _dio.get(
         '$baseUrl/players.json',
-        queryParameters: {
-          if (name != null) 'name': name,
-        },
       );
-      final Map<String, dynamic> data = response.data;
-      if (response.data != null) {
+      final Map<String, dynamic>? data = response.data;
+      if (data != null) {
         data.forEach(
           (playerId, playerData) {
             _playersList.add(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../core/ui/helpers/debouncer.dart';
 import 'widgets/player_row.dart';
@@ -19,8 +20,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with Loader, Messages {
   late final ReactionDisposer statusReactionDisposer;
-  final debouncer = Debouncer(milisencods: 2000);
+  final debouncer = Debouncer(milisencods: 200);
   final controller = Modular.get<HomeController>();
+
   bool isLoading = false;
   String email = '';
   @override
@@ -59,7 +61,6 @@ class _HomePageState extends State<HomePage> with Loader, Messages {
   Widget build(BuildContext context) {
     final screenShortestSize = context.screenShortestSide;
     final screenWidht = context.screenWidht;
-    final players = controller.playersList;
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -183,28 +184,36 @@ class _HomePageState extends State<HomePage> with Loader, Messages {
                           child: SizedBox(
                             height: context.screenHeight * 1,
                             width: screenWidht * 1,
-                            child: ListView.builder(
-                              itemCount: players?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                final player = players?[index];
-                                return players == null
-                                    ? Center(
-                                        child: Text(
-                                          'Nenhum jogador encontrado !',
-                                          style: context.textStyles.textRegular
-                                              .copyWith(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: PlayerRow(
-                                          controller: controller,
-                                          player: player,
-                                        ),
-                                      );
+                            child: Observer(
+                              builder: (_) {
+                                return ListView.builder(
+                                  itemCount: controller.playersSearch?.length,
+                                  itemBuilder: (context, index) {
+                                    final player =
+                                        controller.playersSearch?[index];
+                                    return controller.playersSearch == null
+                                        ? Center(
+                                            child: Text(
+                                              'Nenhum jogador encontrado !',
+                                              style: context
+                                                  .textStyles.textRegular
+                                                  .copyWith(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            child: PlayerRow(
+                                              controller: controller,
+                                              player: player,
+                                            ),
+                                          );
+                                  },
+                                );
                               },
                             ),
                           ),

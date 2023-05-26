@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:validatorless/validatorless.dart';
+
 import '../../../core/ui/helpers/size_extensions.dart';
 import '../../../core/ui/styles/text_styles.dart';
 import '../../../models/players_model.dart';
@@ -41,7 +41,7 @@ class _PlayersDeleteModalState extends State<PlayersDeleteModal> {
             10,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 33, 7, 38),
+        backgroundColor: const Color.fromARGB(255, 33, 7, 38),
         elevation: 10,
         child: Container(
           width: screenWidth * (screenWidth > 1200 ? .5 : .7),
@@ -105,7 +105,8 @@ class _PlayersDeleteModalState extends State<PlayersDeleteModal> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue),
+                              backgroundColor: Colors.blue,
+                            ),
                             onPressed: () => _closeModal(),
                             child: Text(
                               'Cancelar',
